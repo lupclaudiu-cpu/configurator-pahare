@@ -1,2 +1,3 @@
 [build]
+  command = "echo Static deploy"
   publish = "public-site"
