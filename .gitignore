@@ -1,0 +1,13 @@
+.next/
+node_modules/
+out/
+.npm-cache/
+.tmp-*/
+
+*.log
+*.zip
+*.tgz
+
+Git-*.exe
+node-*.msi
+VSCodeUserSetup-*.exe

@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Configurator Pahare Personalizate</title>
+    <meta
+      name="description"
+      content="Configurator premium pentru pahare personalizate cu logo."
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --gold-50: #fff9eb;
+        --gold-200: #efd9a4;
+        --gold-300: #deb45f;
+        --gold-500: #b88a2c;
+        --gold-700: #7d5d1e;
+        --ink: #0b0b0b;
+        --muted: #666;
+        --line: #e5e5e5;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgba(184, 138, 44, 0.06) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(184, 138, 44, 0.04) 1px, transparent 1px),
+          #fff;
+        background-size: 72px 72px;
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .page {
+        width: min(1280px, 100%);
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 20px;
+      }
+
+      .eyebrow {
+        margin: 0;
+        color: var(--gold-700);
+        font-size: 12px;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 8px 0 0;
+        font-size: clamp(22px, 2vw, 28px);
+      }
+
+      .gold-line {
+        display: none;
+        width: 96px;
+        height: 1px;
+        background: var(--gold-500);
+      }
+
+      .layout {
+        display: grid;
+        gap: 32px;
+        align-items: center;
+        padding: 32px 0;
+      }
+
+      .intro {
+        max-width: 680px;
+        margin-bottom: 28px;
+      }
+
+      .intro h2 {
+        margin: 16px 0 0;
+        font-size: clamp(38px, 5vw, 64px);
+        line-height: 1.05;
+      }
+
+      .intro p:last-child {
+        max-width: 580px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      form {
+        display: grid;
+        gap: 24px;
+      }
+
+      fieldset {
+        border: 0;
+        margin: 0;
+        padding: 0;
+      }
+
+      legend,
+      .label-title {
+        display: block;
+        margin-bottom: 12px;
+        color: #262626;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .models {
+        display: grid;
+        gap: 16px;
+      }
+
+      .model-card {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 16px;
+        transition: 0.2s ease;
+      }
+
+      .model-card.active {
+        border-color: var(--gold-500);
+        background: rgba(255, 249, 235, 0.72);
+        box-shadow: 0 18px 45px rgba(18, 18, 18, 0.06);
+      }
+
+      .model-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .model-title {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        color: #111;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .model-subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .icon-button {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: #666;
+      }
+
+      .icon-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.35;
+      }
+
+      .control-group {
+        display: grid;
+        gap: 16px;
+      }
+
+      .options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .choice,
+      .add-model,
+      .reset-logo {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: #444;
+        font-weight: 700;
+        transition: 0.2s ease;
+      }
+
+      .choice:hover,
+      .add-model:hover,
+      .reset-logo:hover {
+        border-color: var(--gold-300);
+      }
+
+      .choice.active {
+        border-color: var(--gold-500);
+        color: var(--ink);
+        box-shadow: 0 18px 45px rgba(18, 18, 18, 0.06);
+      }
+
+      .add-model,
+      .reset-logo {
+        display: inline-flex;
+        width: max-content;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 16px;
+        border-color: var(--gold-300);
+      }
+
+      .upload {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        border: 1px dashed var(--gold-300);
+        background: #fff;
+        padding: 16px;
+        cursor: pointer;
+      }
+
+      .upload-text {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .upload-icon {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid var(--gold-300);
+        color: var(--gold-700);
+      }
+
+      .upload-name {
+        display: block;
+        overflow: hidden;
+        color: #777;
+        font-size: 14px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .upload input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
+
+      .helper {
+        margin: -12px 0 0;
+        color: #777;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .logo-controls {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        border: 1px solid var(--line);
+        background: #fafafa;
+        padding: 16px;
+      }
+
+      .logo-controls.visible {
+        display: grid;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--gold-500);
+      }
+
+      .fields {
+        display: grid;
+        gap: 12px;
+      }
+
+      .input-wrap {
+        position: relative;
+      }
+
+      .input-wrap span {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gold-700);
+      }
+
+      .input-wrap.textarea span {
+        top: 18px;
+        transform: none;
+      }
+
+      input[type="text"],
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 14px 14px 14px 46px;
+        outline: none;
+      }
+
+      input[type="text"] {
+        min-height: 56px;
+      }
+
+      textarea {
+        min-height: 112px;
+        resize: none;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus {
+        border-color: var(--gold-500);
+      }
+
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 16px 0;
+        font-size: 14px;
+      }
+
+      .summary span {
+        display: block;
+        color: #777;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .summary strong {
+        display: block;
+        margin-top: 6px;
+      }
+
+      .white-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-right: 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        vertical-align: -1px;
+      }
+
+      .cta {
+        display: inline-flex;
+        min-height: 56px;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: #0b0b0b;
+        color: #fff;
+        padding: 14px 20px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .preview-wrap {
+        order: -1;
+        display: flex;
+        justify-content: center;
+      }
+
+      .preview-shell {
+        position: relative;
+        width: min(520px, 100%);
+        padding: 32px 0;
+      }
+
+      .preview-border {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 72%;
+        height: 78%;
+        border: 1px solid var(--gold-200);
+        transform: translate(-50%, -50%);
+      }
+
+      .preview-card {
+        position: relative;
+        display: flex;
+        width: 100%;
+        min-height: 430px;
+        aspect-ratio: 4 / 5;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        box-shadow: 0 28px 80px rgba(18, 18, 18, 0.08);
+      }
+
+      .preview-size,
+      .preview-qty {
+        position: absolute;
+        top: 32px;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .preview-size {
+        left: 32px;
+        color: var(--gold-700);
+      }
+
+      .preview-qty {
+        right: 32px;
+        color: #777;
+      }
+
+      .cup-box {
+        position: relative;
+        min-width: 170px;
+        transition: width 0.3s ease, height 0.3s ease;
+      }
+
+      .cup-rim {
+        position: absolute;
+        z-index: 2;
+        left: 50%;
+        top: 0;
+        width: 91%;
+        border: 1px solid #ddd;
+        background: #fff;
+        clip-path: ellipse(50% 48% at 50% 50%);
+        box-shadow: inset 0 8px 16px rgba(0, 0, 0, 0.06);
+        transform: translateX(-50%);
+      }
+
+      .cup-body {
+        position: absolute;
+        left: 50%;
+        top: 16px;
+        width: 100%;
+        height: 92%;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        background: linear-gradient(90deg, #fafafa, #fff, #eee);
+        clip-path: polygon(
+          8% 0,
+          92% 0,
+          var(--cup-bottom) 100%,
+          calc(100% - var(--cup-bottom)) 100%
+        );
+        box-shadow: 28px 28px 55px rgba(0, 0, 0, 0.1);
+        transform: translateX(-50%);
+      }
+
+      .cup-body::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 12%;
+        width: 16%;
+        background: rgba(255, 255, 255, 0.72);
+        filter: blur(18px);
+      }
+
+      .cup-body::after {
+        content: "";
+        position: absolute;
+        inset: 0 16% 0 auto;
+        width: 12%;
+        background: rgba(210, 210, 210, 0.4);
+        filter: blur(18px);
+      }
+
+      .logo-box {
+        position: absolute;
+        z-index: 3;
+        left: 50%;
+        display: flex;
+        width: 136px;
+        height: 96px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo-placeholder {
+        border-bottom: 1px solid #111;
+        padding-bottom: 8px;
+        color: #111;
+        font-size: 12px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+
+      .logo-box img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.16));
+      }
+
+      .cup-shadow {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 58%;
+        height: 32px;
+        border-radius: 999px;
+        background: rgba(190, 190, 190, 0.35);
+        filter: blur(14px);
+        transform: translateX(-50%);
+      }
+
+      .preview-line {
+        position: absolute;
+        right: 32px;
+        bottom: 32px;
+        width: 80px;
+        height: 1px;
+        background: var(--gold-500);
+      }
+
+      @media (min-width: 640px) {
+        .page {
+          padding: 20px 32px;
+        }
+
+        .fields {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .options {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .cta {
+          width: max-content;
+        }
+
+        .gold-line {
+          display: block;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .page {
+          padding: 20px 40px;
+        }
+
+        .layout {
+          grid-template-columns: 1.05fr 0.95fr;
+          gap: 56px;
+        }
+
+        .preview-wrap {
+          order: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Depozitul Online</p>
+          <h1>Configurator pahare personalizate</h1>
+        </div>
+        <div class="gold-line"></div>
+      </header>
+
+      <div class="layout">
+        <section>
+          <div class="intro">
+            <p class="eyebrow">Luxury white cup</p>
+            <h2>Pahar alb, logo-ul tau, oferta pe WhatsApp.</h2>
+            <p>
+              Alege unul sau mai multe modele, incarca logo-ul si vezi instant
+              cum arata pe un mockup minimalist, pregatit pentru cererea de
+              oferta.
+            </p>
+          </div>
+
+          <form onsubmit="event.preventDefault()">
+            <fieldset>
+              <legend>Modele comandate</legend>
+              <div id="models" class="models"></div>
+            </fieldset>
+
+            <button class="add-model" type="button" id="addModel">+ Adauga model</button>
+
+            <label class="upload">
+              <span class="upload-text">
+                <span class="upload-icon">UP</span>
+                <span>
+                  <strong>Incarca logo PNG/JPG</strong>
+                  <span id="logoName" class="upload-name">
+                    Selecteaza fisierul brandului tau
+                  </span>
+                </span>
+              </span>
+              <input id="logoInput" type="file" accept="image/png,image/jpeg,image/jpg" />
+            </label>
+            <p class="helper">
+              Logo-ul este folosit pentru previzualizare. Dupa deschiderea
+              conversatiei pe WhatsApp, te rugam sa atasezi manual fisierul cu
+              logo-ul.
+            </p>
+
+            <div id="logoControls" class="logo-controls">
+              <label>
+                <span class="label-title">Marime logo</span>
+                <input id="logoScale" type="range" min="70" max="135" value="100" />
+              </label>
+              <label>
+                <span class="label-title">Pozitie verticala</span>
+                <input id="logoVertical" type="range" min="32" max="58" value="42" />
+              </label>
+              <button class="reset-logo" type="button" id="resetLogo">Reseteaza logo</button>
+            </div>
+
+            <div class="fields">
+              <label class="input-wrap">
+                <span>N</span>
+                <input id="clientName" type="text" placeholder="Numele clientului" />
+              </label>
+              <label class="input-wrap">
+                <span>T</span>
+                <input id="phone" type="text" placeholder="Telefon" />
+              </label>
+            </div>
+
+            <label class="input-wrap textarea">
+              <span>M</span>
+              <textarea id="message" placeholder="Mesaj"></textarea>
+            </label>
+
+            <div class="summary">
+              <div>
+                <span>Modele</span>
+                <strong id="summaryModels">1</strong>
+              </div>
+              <div>
+                <span>Total</span>
+                <strong id="summaryTotal">2000 buc.</strong>
+              </div>
+              <div>
+                <span>Pahar</span>
+                <strong><i class="white-dot"></i>Alb</strong>
+              </div>
+            </div>
+
+            <a id="whatsappLink" class="cta" target="_blank" rel="noreferrer">
+              Cere oferta
+            </a>
+            <p class="helper">
+              Mesajul se completeaza automat, iar logo-ul se trimite separat ca
+              atasament in WhatsApp.
+            </p>
+          </form>
+        </section>
+
+        <section class="preview-wrap">
+          <div class="preview-shell">
+            <div class="preview-border"></div>
+            <div class="preview-card">
+              <div id="previewSize" class="preview-size">8oz</div>
+              <div id="previewQty" class="preview-qty">2000 buc.</div>
+              <div id="cupBox" class="cup-box">
+                <div id="cupRim" class="cup-rim"></div>
+                <div id="cupBody" class="cup-body">
+                  <div id="logoBox" class="logo-box">
+                    <span class="logo-placeholder">Logo</span>
+                  </div>
+                </div>
+                <div class="cup-shadow"></div>
+              </div>
+              <div class="preview-line"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const sizes = ["4oz", "6oz", "8oz", "12oz"];
+      const minimumQuantities = {
+        "4oz": 1000,
+        "6oz": 3000,
+        "8oz": 2000,
+        "12oz": 1000,
+      };
+      const cupDimensions = {
+        "4oz": { height: "36%", width: "42%", rim: 26, bottom: "84%" },
+        "6oz": { height: "43%", width: "46%", rim: 29, bottom: "81%" },
+        "8oz": { height: "48%", width: "50%", rim: 31, bottom: "78%" },
+        "12oz": { height: "62%", width: "54%", rim: 35, bottom: "70%" },
+      };
+      const whatsappNumber = "40748322673";
+
+      let models = [{ id: 1, size: "8oz", quantity: minimumQuantities["8oz"] }];
+      let activeModelId = 1;
+      let logoDataUrl = "";
+
+      const modelsEl = document.getElementById("models");
+      const addModelEl = document.getElementById("addModel");
+      const logoInputEl = document.getElementById("logoInput");
+      const logoNameEl = document.getElementById("logoName");
+      const logoControlsEl = document.getElementById("logoControls");
+      const logoScaleEl = document.getElementById("logoScale");
+      const logoVerticalEl = document.getElementById("logoVertical");
+      const resetLogoEl = document.getElementById("resetLogo");
+      const clientNameEl = document.getElementById("clientName");
+      const phoneEl = document.getElementById("phone");
+      const messageEl = document.getElementById("message");
+      const summaryModelsEl = document.getElementById("summaryModels");
+      const summaryTotalEl = document.getElementById("summaryTotal");
+      const whatsappLinkEl = document.getElementById("whatsappLink");
+      const previewSizeEl = document.getElementById("previewSize");
+      const previewQtyEl = document.getElementById("previewQty");
+      const cupBoxEl = document.getElementById("cupBox");
+      const cupRimEl = document.getElementById("cupRim");
+      const cupBodyEl = document.getElementById("cupBody");
+      const logoBoxEl = document.getElementById("logoBox");
+
+      function getQuantityOptions(size) {
+        const minimum = minimumQuantities[size];
+        return [1, 2, 3, 4].map((multiplier) => minimum * multiplier);
+      }
+
+      function getActiveModel() {
+        return models.find((model) => model.id === activeModelId) || models[0];
+      }
+
+      function updateModel(id, changes) {
+        models = models.map((model) => {
+          if (model.id !== id) return model;
+          const nextSize = changes.size || model.size;
+          const minimum = minimumQuantities[nextSize];
+          const requestedQuantity =
+            changes.quantity || (changes.size ? minimum : model.quantity);
+
+          return {
+            ...model,
+            ...changes,
+            size: nextSize,
+            quantity: Math.max(requestedQuantity, minimum),
+          };
+        });
+        activeModelId = id;
+        render();
+      }
+
+      function removeModel(id) {
+        if (models.length === 1) return;
+        models = models.filter((model) => model.id !== id);
+        if (activeModelId === id) activeModelId = models[0].id;
+        render();
+      }
+
+      function buildWhatsappHref() {
+        const totalQuantity = models.reduce((sum, model) => sum + model.quantity, 0);
+        const modelLines = models.map(
+          (model, index) =>
+            `Model ${index + 1}: ${model.size}, ${model.quantity} buc. (minim ${
+              minimumQuantities[model.size]
+            } buc.)`,
+        );
+        const lines = [
+          "Buna ziua, doresc o oferta pentru pahare personalizate.",
+          "Pahar: alb",
+          "Modele comandate:",
+          ...modelLines,
+          `Total: ${totalQuantity} buc.`,
+          `Logo incarcat: ${logoNameEl.textContent === "Selecteaza fisierul brandului tau" ? "nu" : logoNameEl.textContent}`,
+          `Nume client: ${clientNameEl.value || "-"}`,
+          `Telefon: ${phoneEl.value || "-"}`,
+          `Mesaj: ${messageEl.value || "-"}`,
+        ];
+
+        return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
+      }
+
+      function renderModels() {
+        modelsEl.innerHTML = "";
+        models.forEach((model, index) => {
+          const card = document.createElement("div");
+          card.className = `model-card ${model.id === activeModelId ? "active" : ""}`;
+          card.addEventListener("click", () => {
+            activeModelId = model.id;
+            render();
+          });
+
+          const sizeButtons = sizes
+            .map(
+              (size) =>
+                `<button type="button" class="choice ${
+                  model.size === size ? "active" : ""
+                }" data-kind="size" data-value="${size}">${size}</button>`,
+            )
+            .join("");
+          const quantityButtons = getQuantityOptions(model.size)
+            .map(
+              (quantity) =>
+                `<button type="button" class="choice ${
+                  model.quantity === quantity ? "active" : ""
+                }" data-kind="quantity" data-value="${quantity}">${quantity} buc.</button>`,
+            )
+            .join("");
+
+          card.innerHTML = `
+            <div class="model-head">
+              <div>
+                <button type="button" class="model-title">Model ${index + 1}</button>
+                <p class="model-subtitle">${model.size} - ${model.quantity} buc.</p>
+              </div>
+              <button type="button" class="icon-button" ${
+                models.length === 1 ? "disabled" : ""
+              } aria-label="Sterge modelul ${index + 1}">X</button>
+            </div>
+            <div class="control-group">
+              <div>
+                <span class="label-title">Dimensiune</span>
+                <div class="options">${sizeButtons}</div>
+              </div>
+              <div>
+                <span class="label-title">Cantitate minima: ${
+                  minimumQuantities[model.size]
+                } buc.</span>
+                <div class="options">${quantityButtons}</div>
+              </div>
+            </div>
+          `;
+
+          card.querySelector(".model-title").addEventListener("click", (event) => {
+            event.stopPropagation();
+            activeModelId = model.id;
+            render();
+          });
+          card.querySelector(".icon-button").addEventListener("click", (event) => {
+            event.stopPropagation();
+            removeModel(model.id);
+          });
+          card.querySelectorAll(".choice").forEach((button) => {
+            button.addEventListener("click", (event) => {
+              event.stopPropagation();
+              if (button.dataset.kind === "size") {
+                updateModel(model.id, { size: button.dataset.value });
+              } else {
+                updateModel(model.id, { quantity: Number(button.dataset.value) });
+              }
+            });
+          });
+
+          modelsEl.appendChild(card);
+        });
+      }
+
+      function renderPreview() {
+        const activeModel = getActiveModel();
+        const cup = cupDimensions[activeModel.size];
+        previewSizeEl.textContent = activeModel.size;
+        previewQtyEl.textContent = `${activeModel.quantity} buc.`;
+        cupBoxEl.style.height = cup.height;
+        cupBoxEl.style.width = cup.width;
+        cupRimEl.style.height = `${cup.rim}px`;
+        cupBodyEl.style.setProperty("--cup-bottom", cup.bottom);
+        logoBoxEl.style.top = `${logoVerticalEl.value}%`;
+        logoBoxEl.style.transform = `translate(-50%, -50%) scale(${
+          Number(logoScaleEl.value) / 100
+        })`;
+        logoBoxEl.innerHTML = logoDataUrl
+          ? `<img src="${logoDataUrl}" alt="Logo incarcat" />`
+          : `<span class="logo-placeholder">Logo</span>`;
+      }
+
+      function renderSummary() {
+        const totalQuantity = models.reduce((sum, model) => sum + model.quantity, 0);
+        summaryModelsEl.textContent = String(models.length);
+        summaryTotalEl.textContent = `${totalQuantity} buc.`;
+        whatsappLinkEl.href = buildWhatsappHref();
+      }
+
+      function render() {
+        renderModels();
+        renderPreview();
+        renderSummary();
+      }
+
+      addModelEl.addEventListener("click", () => {
+        const nextId = Math.max(...models.map((model) => model.id)) + 1;
+        models.push({ id: nextId, size: "4oz", quantity: minimumQuantities["4oz"] });
+        activeModelId = nextId;
+        render();
+      });
+
+      logoInputEl.addEventListener("change", () => {
+        const file = logoInputEl.files && logoInputEl.files[0];
+        if (!file) {
+          logoDataUrl = "";
+          logoNameEl.textContent = "Selecteaza fisierul brandului tau";
+          logoControlsEl.classList.remove("visible");
+          renderPreview();
+          renderSummary();
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          logoDataUrl = String(reader.result || "");
+          logoNameEl.textContent = file.name;
+          logoControlsEl.classList.add("visible");
+          renderPreview();
+          renderSummary();
+        };
+        reader.readAsDataURL(file);
+      });
+
+      logoScaleEl.addEventListener("input", renderPreview);
+      logoVerticalEl.addEventListener("input", renderPreview);
+      resetLogoEl.addEventListener("click", () => {
+        logoInputEl.value = "";
+        logoDataUrl = "";
+        logoNameEl.textContent = "Selecteaza fisierul brandului tau";
+        logoControlsEl.classList.remove("visible");
+        logoScaleEl.value = "100";
+        logoVerticalEl.value = "42";
+        renderPreview();
+        renderSummary();
+      });
+
+      [clientNameEl, phoneEl, messageEl].forEach((field) => {
+        field.addEventListener("input", renderSummary);
+      });
+
+      render();
+    </script>
+  </body>
+</html>
