@@ -23,14 +23,17 @@
         --muted: #666;
         --line: #e5e5e5;
         --soft-line: rgba(11, 11, 11, 0.08);
+        --glass: rgba(255, 255, 255, 0.78);
+        --black-glass: rgba(9, 9, 9, 0.94);
       }
 
       body {
         min-height: 100vh;
         margin: 0;
         background:
-          linear-gradient(115deg, rgba(184, 138, 44, 0.08), transparent 28%),
-          linear-gradient(180deg, #fff 0%, #f8f8f6 50%, #fff 100%);
+          radial-gradient(circle at 68% 14%, rgba(184, 138, 44, 0.16), transparent 24%),
+          radial-gradient(circle at 22% 38%, rgba(255, 255, 255, 0.96), transparent 28%),
+          linear-gradient(135deg, #fbfaf7 0%, #ebe7de 48%, #ffffff 100%);
         color: var(--ink);
         font-family: Arial, Helvetica, sans-serif;
       }
@@ -72,9 +75,11 @@
         align-items: center;
         justify-content: space-between;
         gap: 24px;
-        border-bottom: 1px solid var(--soft-line);
-        background: rgba(255, 255, 255, 0.78);
-        padding: 18px 0;
+        border: 1px solid rgba(184, 138, 44, 0.16);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        padding: 12px 18px;
+        box-shadow: 0 18px 46px rgba(18, 18, 18, 0.055);
         backdrop-filter: blur(18px);
       }
 
@@ -103,7 +108,7 @@
         display: grid;
         gap: 32px;
         align-items: center;
-        padding: 38px 0 52px;
+        padding: clamp(28px, 5vw, 58px) 0 52px;
       }
 
       .intro {
@@ -131,9 +136,13 @@
         gap: 24px;
         border: 1px solid rgba(184, 138, 44, 0.22);
         border-radius: 8px;
-        background: rgba(255, 255, 255, 0.78);
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(246, 244, 238, 0.76)),
+          var(--glass);
         padding: clamp(18px, 3vw, 28px);
-        box-shadow: 0 28px 90px rgba(20, 20, 20, 0.07);
+        box-shadow:
+          0 34px 100px rgba(20, 20, 20, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.82);
         backdrop-filter: blur(18px);
       }
 
@@ -162,10 +171,11 @@
       .model-card {
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: #fff;
+        background: rgba(255, 255, 255, 0.84);
         padding: 16px;
-        transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease,
-          background 0.22s ease;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76);
+        transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s ease,
+          background 0.28s ease;
       }
 
       .model-card.active {
@@ -236,7 +246,8 @@
         background: #fff;
         color: #444;
         font-weight: 700;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        transition: border-color 0.26s ease, box-shadow 0.26s ease, transform 0.26s ease,
+          background 0.26s ease;
       }
 
       .choice:hover,
@@ -268,17 +279,26 @@
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        border: 1px dashed var(--gold-300);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(184, 138, 44, 0.34);
         border-radius: 8px;
-        background: #fff;
+        background:
+          radial-gradient(circle at 12% 50%, rgba(184, 138, 44, 0.22), transparent 30%),
+          rgba(255, 255, 255, 0.065);
         padding: 16px;
+        color: #fff;
         cursor: pointer;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s ease,
+          background 0.28s ease;
       }
 
       .upload:hover {
-        border-color: var(--gold-500);
-        box-shadow: 0 18px 45px rgba(18, 18, 18, 0.05);
+        border-color: rgba(184, 138, 44, 0.62);
+        background: rgba(255, 255, 255, 0.09);
+        box-shadow: 0 18px 48px rgba(184, 138, 44, 0.12);
+        transform: translateY(-2px);
       }
 
       .upload-text {
@@ -290,19 +310,22 @@
 
       .upload-icon {
         display: grid;
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
         flex: 0 0 auto;
         place-items: center;
-        border: 1px solid var(--gold-300);
-        border-radius: 8px;
-        color: var(--gold-700);
+        border: 1px solid rgba(255, 255, 255, 0.34);
+        border-radius: 50%;
+        background: #fff;
+        color: var(--ink);
+        font-size: 22px;
+        line-height: 1;
       }
 
       .upload-name {
         display: block;
         overflow: hidden;
-        color: #777;
+        color: rgba(255, 255, 255, 0.62);
         font-size: 14px;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -327,9 +350,9 @@
         display: none;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 16px;
-        border: 1px solid var(--line);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 8px;
-        background: #fafafa;
+        background: rgba(255, 255, 255, 0.055);
         padding: 16px;
       }
 
@@ -458,8 +481,8 @@
 
       .preview-shell {
         position: relative;
-        width: min(520px, 100%);
-        padding: 32px 0;
+        width: min(640px, 100%);
+        padding: 0;
       }
 
       .preview-border {
@@ -477,26 +500,31 @@
         position: relative;
         display: flex;
         width: 100%;
-        min-height: 430px;
+        min-height: 540px;
         aspect-ratio: 4 / 5;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(184, 138, 44, 0.16);
         border-radius: 8px;
         background:
-          linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(245, 245, 242, 0.66)),
+          radial-gradient(circle at 52% 28%, rgba(255, 255, 255, 0.98), transparent 28%),
+          radial-gradient(circle at 66% 48%, rgba(184, 138, 44, 0.12), transparent 30%),
+          linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(245, 243, 236, 0.72)),
           linear-gradient(180deg, #fff, #f4f4f2);
-        box-shadow: 0 38px 100px rgba(18, 18, 18, 0.1);
+        box-shadow:
+          0 42px 120px rgba(18, 18, 18, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.86);
       }
 
       .preview-card::before {
         content: "";
         position: absolute;
-        inset: 10%;
-        background: linear-gradient(115deg, transparent 0 34%, rgba(255, 255, 255, 0.72) 45%, transparent 56% 100%);
+        inset: 8%;
+        background: linear-gradient(115deg, transparent 0 34%, rgba(255, 255, 255, 0.86) 45%, transparent 57% 100%);
         opacity: 0.72;
         transform: translateX(-12%);
+        animation: cinematicSweep 7s ease-in-out infinite;
       }
 
       .preview-size,
@@ -646,6 +674,45 @@
         background: var(--gold-500);
       }
 
+      .preview-tools {
+        position: relative;
+        display: grid;
+        gap: 14px;
+        margin-top: 16px;
+        border: 1px solid rgba(184, 138, 44, 0.26);
+        border-radius: 8px;
+        background:
+          radial-gradient(circle at 18% 0%, rgba(184, 138, 44, 0.18), transparent 36%),
+          linear-gradient(145deg, rgba(9, 9, 9, 0.97), rgba(30, 29, 26, 0.95));
+        padding: clamp(16px, 3vw, 22px);
+        color: #fff;
+        box-shadow:
+          0 28px 78px rgba(18, 18, 18, 0.18),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .preview-tools .label-title {
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 11px;
+      }
+
+      .preview-tools .reset-logo {
+        border-color: rgba(184, 138, 44, 0.38);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+      }
+
+      .preview-tools .reset-logo:hover {
+        background: #fff;
+        color: var(--ink);
+        box-shadow: 0 18px 42px rgba(184, 138, 44, 0.12);
+      }
+
+      .preview-helper {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.58);
+      }
+
       .trust-strip {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -788,6 +855,18 @@
         }
       }
 
+      @keyframes cinematicSweep {
+        0%,
+        100% {
+          opacity: 0.22;
+          transform: translateX(-20%);
+        }
+        50% {
+          opacity: 0.76;
+          transform: translateX(16%);
+        }
+      }
+
       @media (min-width: 640px) {
         .page {
           padding: 20px 32px;
@@ -825,7 +904,7 @@
         }
 
         .layout {
-          grid-template-columns: 1.05fr 0.95fr;
+          grid-template-columns: 0.9fr 1.1fr;
           gap: 56px;
         }
 
@@ -837,6 +916,7 @@
       @media (max-width: 639px) {
         .topbar {
           align-items: flex-start;
+          border-radius: 8px;
         }
 
         .layout {
@@ -852,11 +932,11 @@
         }
 
         .preview-shell {
-          padding: 14px 0;
+          padding: 0;
         }
 
         .preview-card {
-          min-height: 390px;
+          min-height: 420px;
         }
 
         .summary,
@@ -868,8 +948,19 @@
           grid-template-columns: 1fr;
         }
 
+        .preview-tools {
+          margin-top: 12px;
+        }
+
         .big-cta {
           width: 100%;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .cup-box,
+        .preview-card::before {
+          animation: none;
         }
       }
     </style>
@@ -903,36 +994,6 @@
             </fieldset>
 
             <button class="add-model" type="button" id="addModel">+ Adauga model</button>
-
-            <label class="upload">
-              <span class="upload-text">
-                <span class="upload-icon">UP</span>
-                <span>
-                  <strong>Incarca logo PNG/JPG</strong>
-                  <span id="logoName" class="upload-name">
-                    Selecteaza fisierul brandului tau
-                  </span>
-                </span>
-              </span>
-              <input id="logoInput" type="file" accept="image/png,image/jpeg,image/jpg" />
-            </label>
-            <p class="helper">
-              Logo-ul este folosit pentru previzualizare. Dupa deschiderea
-              conversatiei pe WhatsApp, te rugam sa atasezi manual fisierul cu
-              logo-ul. Fundalul alb din poza este eliminat automat din mockup.
-            </p>
-
-            <div id="logoControls" class="logo-controls">
-              <label>
-                <span class="label-title">Marime logo</span>
-                <input id="logoScale" type="range" min="70" max="135" value="100" />
-              </label>
-              <label>
-                <span class="label-title">Pozitie verticala</span>
-                <input id="logoVertical" type="range" min="32" max="58" value="42" />
-              </label>
-              <button class="reset-logo" type="button" id="resetLogo">Reseteaza logo</button>
-            </div>
 
             <div class="fields">
               <label class="input-wrap">
@@ -991,6 +1052,35 @@
                 <div class="cup-shadow"></div>
               </div>
               <div class="preview-line"></div>
+            </div>
+            <div class="preview-tools">
+              <label class="upload">
+                <span class="upload-text">
+                  <span class="upload-icon">+</span>
+                  <span>
+                    <strong>Incarca logo PNG/JPG</strong>
+                    <span id="logoName" class="upload-name">
+                      Selecteaza fisierul brandului tau
+                    </span>
+                  </span>
+                </span>
+                <input id="logoInput" type="file" accept="image/png,image/jpeg,image/jpg" />
+              </label>
+              <div id="logoControls" class="logo-controls">
+                <label>
+                  <span class="label-title">Marime logo</span>
+                  <input id="logoScale" type="range" min="70" max="135" value="100" />
+                </label>
+                <label>
+                  <span class="label-title">Pozitie logo</span>
+                  <input id="logoVertical" type="range" min="32" max="58" value="42" />
+                </label>
+                <button class="reset-logo" type="button" id="resetLogo">Reseteaza logo</button>
+              </div>
+              <p class="helper preview-helper">
+                Fundalul alb din poza este eliminat automat din mockup. Logo-ul se ataseaza
+                separat in conversatia WhatsApp.
+              </p>
             </div>
           </div>
         </section>
