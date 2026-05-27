@@ -621,6 +621,7 @@
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
+        image-rendering: auto;
         filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.16));
       }
 
@@ -918,7 +919,7 @@
             <p class="helper">
               Logo-ul este folosit pentru previzualizare. Dupa deschiderea
               conversatiei pe WhatsApp, te rugam sa atasezi manual fisierul cu
-              logo-ul.
+              logo-ul. Fundalul alb din poza este eliminat automat din mockup.
             </p>
 
             <div id="logoControls" class="logo-controls">
@@ -1300,6 +1301,107 @@
         render();
       });
 
+      function processLogoImage(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error("Fisierul nu a putut fi citit."));
+          reader.onload = () => {
+            const source = String(reader.result || "");
+            const image = new Image();
+            image.onerror = () => reject(new Error("Imaginea nu a putut fi procesata."));
+            image.onload = () => {
+              const maxSize = 1400;
+              const ratio = Math.min(1, maxSize / Math.max(image.width, image.height));
+              const width = Math.max(1, Math.round(image.width * ratio));
+              const height = Math.max(1, Math.round(image.height * ratio));
+              const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d", { willReadFrequently: true });
+
+              if (!context) {
+                resolve(source);
+                return;
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+              context.drawImage(image, 0, 0, width, height);
+
+              const imageData = context.getImageData(0, 0, width, height);
+              const data = imageData.data;
+              let minX = width;
+              let minY = height;
+              let maxX = -1;
+              let maxY = -1;
+
+              for (let index = 0; index < data.length; index += 4) {
+                const r = data[index];
+                const g = data[index + 1];
+                const b = data[index + 2];
+                const alpha = data[index + 3];
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                const brightness = (r + g + b) / 3;
+                const saturation = max - min;
+                const isWhiteBackground =
+                  (brightness > 224 && saturation < 46) || (r > 242 && g > 242 && b > 242);
+
+                if (isWhiteBackground) {
+                  const fade = Math.max(0, Math.min(1, (244 - brightness) / 26));
+                  data[index + 3] = Math.round(alpha * fade);
+                }
+
+                if (data[index + 3] > 18) {
+                  const pixel = index / 4;
+                  const x = pixel % width;
+                  const y = Math.floor(pixel / width);
+                  minX = Math.min(minX, x);
+                  minY = Math.min(minY, y);
+                  maxX = Math.max(maxX, x);
+                  maxY = Math.max(maxY, y);
+                }
+              }
+
+              context.putImageData(imageData, 0, 0);
+
+              if (maxX < minX || maxY < minY) {
+                resolve(source);
+                return;
+              }
+
+              const padding = Math.round(Math.max(maxX - minX, maxY - minY) * 0.06);
+              const cropX = Math.max(0, minX - padding);
+              const cropY = Math.max(0, minY - padding);
+              const cropWidth = Math.min(width - cropX, maxX - minX + 1 + padding * 2);
+              const cropHeight = Math.min(height - cropY, maxY - minY + 1 + padding * 2);
+              const output = document.createElement("canvas");
+              const outputContext = output.getContext("2d");
+
+              if (!outputContext) {
+                resolve(canvas.toDataURL("image/png"));
+                return;
+              }
+
+              output.width = cropWidth;
+              output.height = cropHeight;
+              outputContext.drawImage(
+                canvas,
+                cropX,
+                cropY,
+                cropWidth,
+                cropHeight,
+                0,
+                0,
+                cropWidth,
+                cropHeight,
+              );
+              resolve(output.toDataURL("image/png"));
+            };
+            image.src = source;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
       logoInputEl.addEventListener("change", () => {
         const file = logoInputEl.files && logoInputEl.files[0];
         if (!file) {
@@ -1311,15 +1413,26 @@
           return;
         }
 
-        const reader = new FileReader();
-        reader.onload = () => {
-          logoDataUrl = String(reader.result || "");
+        logoNameEl.textContent = "Se pregateste logo-ul...";
+        processLogoImage(file)
+          .then((processedLogo) => {
+          logoDataUrl = processedLogo;
           logoNameEl.textContent = file.name;
           logoControlsEl.classList.add("visible");
           renderPreview();
           renderSummary();
-        };
-        reader.readAsDataURL(file);
+          })
+          .catch(() => {
+            logoNameEl.textContent = file.name;
+            logoControlsEl.classList.add("visible");
+            const reader = new FileReader();
+            reader.onload = () => {
+              logoDataUrl = String(reader.result || "");
+              renderPreview();
+              renderSummary();
+            };
+            reader.readAsDataURL(file);
+          });
       });
 
       logoScaleEl.addEventListener("input", renderPreview);
