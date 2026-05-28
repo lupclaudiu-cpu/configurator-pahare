@@ -527,6 +527,10 @@
         animation: cinematicSweep 7s ease-in-out infinite;
       }
 
+      .preview-card.logo-arrived::before {
+        animation: cinematicSweep 7s ease-in-out infinite, premiumLogoLight 1.35s ease both;
+      }
+
       .preview-size,
       .preview-qty {
         position: absolute;
@@ -607,6 +611,10 @@
         transform: translateX(-50%);
       }
 
+      .cup-body.logo-arrived {
+        animation: cupLogoMoment 1.1s cubic-bezier(0.19, 1, 0.22, 1) both;
+      }
+
       .cup-body::before {
         content: "";
         position: absolute;
@@ -634,6 +642,43 @@
         height: 96px;
         align-items: center;
         justify-content: center;
+        perspective: 520px;
+        transform-origin: center center;
+      }
+
+      .logo-box::before,
+      .logo-box::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      .logo-box::before {
+        inset: -22% -18%;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at 50% 50%, rgba(226, 189, 98, 0.22), transparent 64%);
+        filter: blur(8px);
+        transform: scale(0.72);
+      }
+
+      .logo-box::after {
+        inset: -16% -26%;
+        background: linear-gradient(105deg, transparent 0 36%, rgba(255, 255, 255, 0.72) 48%, rgba(226, 189, 98, 0.18) 54%, transparent 68% 100%);
+        mix-blend-mode: screen;
+        transform: translateX(-130%) skewX(-10deg);
+      }
+
+      .logo-box.has-logo {
+        transform-style: preserve-3d;
+      }
+
+      .logo-box.logo-arrived::before {
+        animation: logoAura 1.25s cubic-bezier(0.19, 1, 0.22, 1) both;
+      }
+
+      .logo-box.logo-arrived::after {
+        animation: logoShine 1.05s 0.12s cubic-bezier(0.19, 1, 0.22, 1) both;
       }
 
       .logo-placeholder {
@@ -650,7 +695,28 @@
         max-height: 100%;
         object-fit: contain;
         image-rendering: auto;
-        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.16));
+        filter:
+          contrast(1.04)
+          drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
+        transform:
+          rotateY(var(--logo-curve, -7deg))
+          rotateX(1.2deg)
+          scaleX(0.94);
+        transform-origin: center center;
+        mix-blend-mode: multiply;
+        transition:
+          filter 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+          transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+
+      .logo-box.logo-arrived img {
+        animation: logoApplyMoment 1.05s cubic-bezier(0.19, 1, 0.22, 1) both;
+      }
+
+      .logo-box.processing .logo-placeholder {
+        border-bottom-color: rgba(184, 138, 44, 0.8);
+        color: var(--gold-700);
+        animation: logoProcessingPulse 1.1s ease-in-out infinite;
       }
 
       .cup-shadow {
@@ -867,6 +933,101 @@
         }
       }
 
+      @keyframes cupLogoMoment {
+        0% {
+          filter: brightness(1);
+          box-shadow:
+            inset 16px 0 32px rgba(255, 255, 255, 0.7),
+            inset -18px 0 30px rgba(0, 0, 0, 0.055),
+            34px 36px 64px rgba(0, 0, 0, 0.12);
+        }
+        42% {
+          filter: brightness(1.055);
+          box-shadow:
+            inset 18px 0 36px rgba(255, 255, 255, 0.82),
+            inset -20px 0 34px rgba(0, 0, 0, 0.06),
+            36px 40px 76px rgba(0, 0, 0, 0.16),
+            0 0 58px rgba(226, 189, 98, 0.18);
+        }
+        100% {
+          filter: brightness(1);
+        }
+      }
+
+      @keyframes premiumLogoLight {
+        0% {
+          opacity: 0.24;
+          transform: translateX(-28%);
+        }
+        42% {
+          opacity: 0.92;
+          transform: translateX(18%);
+        }
+        100% {
+          opacity: 0.72;
+          transform: translateX(-12%);
+        }
+      }
+
+      @keyframes logoApplyMoment {
+        0% {
+          opacity: 0;
+          filter: blur(10px) contrast(1.08) drop-shadow(0 12px 24px rgba(0, 0, 0, 0.18));
+          transform: rotateY(-22deg) rotateX(5deg) translateY(12px) scale(0.76) scaleX(0.88);
+        }
+        58% {
+          opacity: 1;
+          filter: blur(0) contrast(1.08) drop-shadow(0 7px 14px rgba(0, 0, 0, 0.14));
+          transform: rotateY(-4deg) rotateX(0.8deg) translateY(-2px) scale(1.045) scaleX(0.96);
+        }
+        100% {
+          opacity: 1;
+          filter: contrast(1.04) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
+          transform: rotateY(var(--logo-curve, -7deg)) rotateX(1.2deg) translateY(0) scale(1) scaleX(0.94);
+        }
+      }
+
+      @keyframes logoAura {
+        0% {
+          opacity: 0;
+          transform: scale(0.68);
+        }
+        38% {
+          opacity: 1;
+          transform: scale(1.08);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.34);
+        }
+      }
+
+      @keyframes logoShine {
+        0% {
+          opacity: 0;
+          transform: translateX(-130%) skewX(-10deg);
+        }
+        34% {
+          opacity: 0.92;
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(130%) skewX(-10deg);
+        }
+      }
+
+      @keyframes logoProcessingPulse {
+        0%,
+        100% {
+          opacity: 0.54;
+          letter-spacing: 0.24em;
+        }
+        50% {
+          opacity: 1;
+          letter-spacing: 0.3em;
+        }
+      }
+
       @media (min-width: 640px) {
         .page {
           padding: 20px 32px;
@@ -959,7 +1120,12 @@
 
       @media (prefers-reduced-motion: reduce) {
         .cup-box,
-        .preview-card::before {
+        .preview-card::before,
+        .cup-body.logo-arrived,
+        .logo-box.logo-arrived img,
+        .logo-box.logo-arrived::before,
+        .logo-box.logo-arrived::after,
+        .logo-box.processing .logo-placeholder {
           animation: none;
         }
       }
@@ -1213,10 +1379,12 @@
       const bottomWhatsappLinkEl = document.getElementById("bottomWhatsappLink");
       const previewSizeEl = document.getElementById("previewSize");
       const previewQtyEl = document.getElementById("previewQty");
+      const previewCardEl = document.querySelector(".preview-card");
       const cupBoxEl = document.getElementById("cupBox");
       const cupRimEl = document.getElementById("cupRim");
       const cupBodyEl = document.getElementById("cupBody");
       const logoBoxEl = document.getElementById("logoBox");
+      let logoAnimationTimer = null;
 
       function getQuantityOptions(size) {
         const minimum = minimumQuantities[size];
@@ -1364,9 +1532,25 @@
         logoBoxEl.style.transform = `translate(-50%, -50%) scale(${
           Number(logoScaleEl.value) / 100
         })`;
+        logoBoxEl.classList.toggle("has-logo", Boolean(logoDataUrl));
         logoBoxEl.innerHTML = logoDataUrl
           ? `<img src="${logoDataUrl}" alt="Logo incarcat" />`
           : `<span class="logo-placeholder">Logo</span>`;
+      }
+
+      function playLogoMoment() {
+        window.clearTimeout(logoAnimationTimer);
+        [previewCardEl, cupBodyEl, logoBoxEl].forEach((element) => {
+          if (!element) return;
+          element.classList.remove("logo-arrived");
+          void element.offsetWidth;
+          element.classList.add("logo-arrived");
+        });
+        logoAnimationTimer = window.setTimeout(() => {
+          [previewCardEl, cupBodyEl, logoBoxEl].forEach((element) => {
+            if (element) element.classList.remove("logo-arrived");
+          });
+        }, 1500);
       }
 
       function renderSummary() {
@@ -1498,18 +1682,25 @@
           logoDataUrl = "";
           logoNameEl.textContent = "Selecteaza fisierul brandului tau";
           logoControlsEl.classList.remove("visible");
+          logoBoxEl.classList.remove("processing", "has-logo", "logo-arrived");
+          cupBodyEl.classList.remove("logo-arrived");
+          if (previewCardEl) previewCardEl.classList.remove("logo-arrived");
           renderPreview();
           renderSummary();
           return;
         }
 
         logoNameEl.textContent = "Se pregateste logo-ul...";
+        logoBoxEl.classList.add("processing");
+        logoBoxEl.innerHTML = `<span class="logo-placeholder">Aplicam</span>`;
         processLogoImage(file)
           .then((processedLogo) => {
           logoDataUrl = processedLogo;
           logoNameEl.textContent = file.name;
           logoControlsEl.classList.add("visible");
+          logoBoxEl.classList.remove("processing");
           renderPreview();
+          playLogoMoment();
           renderSummary();
           })
           .catch(() => {
@@ -1518,7 +1709,9 @@
             const reader = new FileReader();
             reader.onload = () => {
               logoDataUrl = String(reader.result || "");
+              logoBoxEl.classList.remove("processing");
               renderPreview();
+              playLogoMoment();
               renderSummary();
             };
             reader.readAsDataURL(file);
@@ -1532,6 +1725,9 @@
         logoDataUrl = "";
         logoNameEl.textContent = "Selecteaza fisierul brandului tau";
         logoControlsEl.classList.remove("visible");
+        logoBoxEl.classList.remove("processing", "has-logo", "logo-arrived");
+        cupBodyEl.classList.remove("logo-arrived");
+        if (previewCardEl) previewCardEl.classList.remove("logo-arrived");
         logoScaleEl.value = "100";
         logoVerticalEl.value = "42";
         renderPreview();
