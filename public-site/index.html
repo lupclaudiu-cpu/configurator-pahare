@@ -1153,7 +1153,7 @@
             </p>
           </div>
 
-          <form onsubmit="event.preventDefault()">
+          <form id="quoteForm" data-ga4-lead-form="true" onsubmit="event.preventDefault()">
             <fieldset>
               <legend>Modele comandate</legend>
               <div id="models" class="models"></div>
@@ -1192,7 +1192,7 @@
               </div>
             </div>
 
-            <a id="whatsappLink" class="cta" target="_blank" rel="noreferrer">
+            <a id="whatsappLink" class="cta" data-ga4-lead-submit="true" target="_blank" rel="noreferrer">
               Cere oferta
             </a>
             <p class="helper">
@@ -1336,13 +1336,48 @@
             Logo-ul se ataseaza manual in conversatie.
           </p>
         </div>
-        <a id="bottomWhatsappLink" class="big-cta" target="_blank" rel="noreferrer">
+        <a id="bottomWhatsappLink" class="big-cta" data-ga4-lead-submit="true" target="_blank" rel="noreferrer">
           Cere oferta pe WhatsApp
         </a>
       </section>
     </main>
 
     <script>
+      const ga4MeasurementId = "G-BJXEHYKCZH";
+      const ga4PageContext = {
+        page_name: "configurator_pahare",
+        page_type: "configurator",
+        product_category: "pahare",
+      };
+
+      window.dataLayer = window.dataLayer || [];
+      window.gtag =
+        window.gtag ||
+        function () {
+          window.dataLayer.push(arguments);
+        };
+
+      function initGa4() {
+        if (!/^G-[A-Z0-9]+$/i.test(ga4MeasurementId)) return;
+        const analyticsScript = document.createElement("script");
+        analyticsScript.async = true;
+        analyticsScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(
+          ga4MeasurementId,
+        )}`;
+        document.head.appendChild(analyticsScript);
+        window.gtag("js", new Date());
+        window.gtag("config", ga4MeasurementId);
+      }
+
+      function trackGa4Event(eventName, details = {}) {
+        window.gtag("event", eventName, {
+          ...ga4PageContext,
+          ...details,
+        });
+      }
+
+      initGa4();
+
       const sizes = ["4oz", "6oz", "8oz", "12oz"];
       const minimumQuantities = {
         "4oz": 1000,
@@ -1385,6 +1420,26 @@
       const cupBodyEl = document.getElementById("cupBody");
       const logoBoxEl = document.getElementById("logoBox");
       let logoAnimationTimer = null;
+
+      document.addEventListener("click", (event) => {
+        const link = event.target.closest("a[href]");
+        if (!link) return;
+
+        const href = link.getAttribute("href") || "";
+        if (/^(https?:\/\/)?(wa\.me|api\.whatsapp\.com)|^whatsapp:/i.test(href)) {
+          trackGa4Event("whatsapp_click", { link_url: link.href });
+        }
+
+        if (/^tel:/i.test(href)) {
+          trackGa4Event("phone_click", {
+            link_url: href.replace(/^tel:/i, ""),
+          });
+        }
+
+        if (link.matches('[data-ga4-lead-submit="true"]')) {
+          trackGa4Event("lead_submit", { form_name: "oferta_pahare" });
+        }
+      });
 
       function getQuantityOptions(size) {
         const minimum = minimumQuantities[size];
